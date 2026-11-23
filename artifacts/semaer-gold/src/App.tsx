@@ -1,14 +1,14 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { Link, Route, Router as WouterRouter, Switch, useLocation } from 'wouter';
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Check, Compass, Globe2, MapPin, Menu, MessageCircle, Navigation, Share2, X } from 'lucide-react';
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Check, ChevronDown, Compass, Globe2, MapPin, Menu, MessageCircle, Navigation, Quote, Share2, X } from 'lucide-react';
 import { SiFacebook, SiInstagram, SiTiktok } from 'react-icons/si';
-import { contactConfig, creationStoryTemplate, text, type CopyKey, type Language } from './content';
+import { brandConfig, contactConfig, creationStoryTemplate, text, type CopyKey, type Language } from './content';
 
 const LanguageContext = createContext<{ language: Language; setLanguage: (language: Language) => void } | null>(null);
 const languageOptions: { value: Language; flag: string; short: string; label: string }[] = [
-  { value: 'WO', flag: '🇸🇳', short: 'WO', label: 'Wolof' },
   { value: 'FR', flag: '🇫🇷', short: 'FR', label: 'Français' },
   { value: 'EN', flag: '🇬🇧', short: 'EN', label: 'English' },
+  { value: 'WO', flag: '🇸🇳', short: 'WO', label: 'Wolof' },
 ];
 const socialIcons = { instagram: SiInstagram, facebook: SiFacebook, tiktok: SiTiktok };
 const socialLabelKeys = {
@@ -37,6 +37,68 @@ function useLanguage() {
   const context = useContext(LanguageContext);
   if (!context) throw new Error('LanguageContext is unavailable');
   return context;
+}
+
+function BrandMark({ onClick }: { onClick?: () => void }) {
+  return <Link href="/" className="brand-mark" onClick={onClick}>
+    <img className="brand-crest" src={brandConfig.crestUrl} alt={brandConfig.logoAlt} />
+    <span className="wordmark" aria-hidden="true"><span>SAER</span><span className="wordmark-gold">GOLD</span></span>
+  </Link>;
+}
+
+function LanguageSelect({ variant = 'header' }: { variant?: 'header' | 'mobile' }) {
+  const { language, setLanguage } = useLanguage();
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const current = languageOptions.find((option) => option.value === language) ?? languageOptions[0];
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (event: PointerEvent) => {
+      if (!containerRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [open]);
+
+  const choose = (value: Language) => {
+    setLanguage(value);
+    setOpen(false);
+  };
+
+  return <div className={`language-select language-select-${variant}`} ref={containerRef}>
+    <button
+      type="button"
+      className="language-trigger"
+      aria-haspopup="listbox"
+      aria-expanded={open}
+      aria-label={`${text('languageSelectLabel', language)} — ${current.label}`}
+      onClick={() => setOpen((value) => !value)}
+      data-testid="language-select-trigger"
+    >
+      <span className="language-flag" aria-hidden="true">{current.flag}</span>
+      <span className="language-label">{current.label}</span>
+      <span className="language-code" aria-hidden="true">{current.short}</span>
+      <ChevronDown size={12} className="language-chevron" aria-hidden="true" />
+    </button>
+    {open && <ul className="language-menu" role="listbox" aria-label={text('languageSelectLabel', language)}>
+      {languageOptions.map((option) => <li key={option.value} role="option" aria-selected={language === option.value}>
+        <button type="button" onClick={() => choose(option.value)} data-testid={`language-${option.value.toLowerCase()}`}>
+          <span className="language-flag" aria-hidden="true">{option.flag}</span>
+          <span>{option.label}</span>
+          {option.value === 'WO' && <em className="language-pending">{text('wolofPending', language)}</em>}
+          {language === option.value && <Check size={12} aria-hidden="true" />}
+        </button>
+      </li>)}
+    </ul>}
+  </div>;
 }
 
 function useMetadata(title: string, description: string) {
@@ -98,14 +160,14 @@ function SocialLinks({ className = '' }: { className?: string }) {
   </div>;
 }
 
-function WhatsAppButton({ floating = false }: { floating?: boolean }) {
+function WhatsAppButton({ floating = false, className: extraClassName = '' }: { floating?: boolean; className?: string }) {
   const { language } = useLanguage();
   const digits = contactConfig.whatsappNumber.replace(/\D/g, '');
   const href = digits
     ? `https://wa.me/${digits}?text=${encodeURIComponent(text('whatsappGreeting', language))}`
     : undefined;
   const label = contactConfig.whatsappNumber ? text('whatsapp', language) : text('whatsappUnavailable', language);
-  const className = floating ? 'whatsapp-button whatsapp-float' : 'whatsapp-button';
+  const className = `${floating ? 'whatsapp-button whatsapp-float' : 'whatsapp-button'} ${extraClassName}`.trim();
 
   return href
     ? <a className={className} href={href} target="_blank" rel="noopener noreferrer" aria-label={label} data-testid={floating ? 'link-whatsapp-floating' : 'link-whatsapp'}>
@@ -121,40 +183,29 @@ function WhatsAppButton({ floating = false }: { floating?: boolean }) {
 }
 
 function Header() {
-  const { language, setLanguage } = useLanguage();
+  const { language } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
   const [location] = useLocation();
   const onHome = location === '/';
   const navItems = [
     { label: text('home', language), href: '/' },
+    { label: text('universe', language), href: onHome ? '#universe' : '/#universe' },
     { label: text('collections', language), href: onHome ? '#collections' : '/#collections' },
     { label: text('creations', language), href: onHome ? '#creations' : '/#creations' },
+    { label: text('expertise', language), href: onHome ? '#expertise' : '/#expertise' },
     { label: text('factory', language), href: onHome ? '#factory' : '/#factory' },
-    { label: text('universe', language), href: onHome ? '#universe' : '/#universe' },
   ];
   const closeMenu = () => setMenuOpen(false);
   return (
     <>
       <header className={`site-header ${location === '/contact' ? 'site-header-light' : ''}`}>
-        <Link href="/" className="wordmark" aria-label={text('homeLinkLabel', language)} onClick={closeMenu}>
-          <span>SAER</span><span className="wordmark-gold">GOLD</span>
-        </Link>
+        <BrandMark onClick={closeMenu} />
         <nav className="desktop-nav" aria-label={text('mainNavLabel', language)}>
           {navItems.map((item) => <Link key={item.href + item.label} href={item.href} className="nav-link">{item.label}</Link>)}
           <Link href="/contact" className={`nav-link ${location === '/contact' ? 'active' : ''}`}>{text('contact', language)}</Link>
         </nav>
         <div className="header-tools">
-          <div className="language-switch" aria-label={text('languageLabel', language)}>
-            {languageOptions.map((option) => <button
-              key={option.value}
-              type="button"
-              onClick={() => setLanguage(option.value)}
-              aria-label={option.label}
-              aria-pressed={language === option.value}
-              title={option.label}
-              data-testid={`language-${option.value.toLowerCase()}`}
-            ><span aria-hidden="true">{option.flag}</span><span className="language-short">{option.short}</span></button>)}
-          </div>
+          <LanguageSelect />
           <Link className="header-contact" href="/contact">{text('contact', language)} <ArrowUpRight size={13} /></Link>
           <button className="menu-toggle" type="button" aria-label={text(menuOpen ? 'menuClose' : 'menuOpen', language)} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)} data-testid="button-mobile-menu">
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
@@ -164,14 +215,9 @@ function Header() {
       {menuOpen && <nav className="mobile-nav" aria-label={text('mobileNavLabel', language)}>
         {navItems.map((item) => <Link key={item.href + item.label} href={item.href} onClick={closeMenu}>{item.label}<ArrowRight size={16} /></Link>)}
         <Link href="/contact" onClick={closeMenu}>{text('contact', language)}<ArrowRight size={16} /></Link>
-        <div className="mobile-language" aria-label={text('languageLabel', language)}>
-          {languageOptions.map((option) => <button
-            key={option.value}
-            onClick={() => { setLanguage(option.value); closeMenu(); }}
-            type="button"
-            aria-pressed={language === option.value}
-            data-testid={`mobile-language-${option.value.toLowerCase()}`}
-          ><span aria-hidden="true">{option.flag}</span> {option.label}</button>)}
+        <div className="mobile-language">
+          <span className="eyebrow">{text('languageLabel', language)}</span>
+          <LanguageSelect variant="mobile" />
         </div>
       </nav>}
     </>
@@ -189,6 +235,83 @@ function MediaPlaceholder({ language, label = 'factoryMediaPlaceholder', classNa
     <span className="media-placeholder-mark" aria-hidden="true">+</span>
     <span>{text(label, language)}</span>
   </div>;
+}
+
+function GalleryItem({ index, label, className = '' }: { index: string; label: CopyKey; className?: string }) {
+  const { language } = useLanguage();
+  return <figure className={`gallery-item ${className}`}>
+    <PhotoPlaceholder className="gallery-item-photo" language={language} />
+    <figcaption>
+      <span className="gallery-number serif">{index}</span>
+      <span className="gallery-caption">
+        <strong>{text(label, language)}</strong>
+        <em>{text('galleryStoryPending', language)}</em>
+      </span>
+    </figcaption>
+  </figure>;
+}
+
+function ExpertiseSection() {
+  const { language } = useLanguage();
+  const pillars = [
+    { title: 'expertisePillarFiligreeTitle', body: 'expertisePillarFiligreeText' },
+    { title: 'expertisePillarTwistTitle', body: 'expertisePillarTwistText' },
+    { title: 'expertisePillarBespokeTitle', body: 'expertisePillarBespokeText' },
+  ] as const;
+  return <section className="expertise-section" id="expertise" aria-labelledby="expertise-title">
+    <div className="expertise-media">
+      <PhotoPlaceholder className="expertise-photo" language={language} />
+      <div className="expertise-media-caption">
+        <span className="serif">SAER GOLD</span>
+        <span>Dakar · Sénégal</span>
+      </div>
+    </div>
+    <div className="expertise-copy">
+      <div className="section-kicker eyebrow"><span className="gold-rule" />{text('expertiseEyebrow', language)}</div>
+      <h2 id="expertise-title" className="serif">{text('expertiseTitle', language)}</h2>
+      <p className="expertise-lead">{text('expertiseLead', language)}</p>
+      <p className="expertise-body">{text('expertiseBody', language)}</p>
+      <div className="expertise-pillars">
+        {pillars.map((pillar, index) => <article className="expertise-pillar" key={pillar.title}>
+          <span className="expertise-index serif">{String(index + 1).padStart(2, '0')}</span>
+          <h3 className="serif">{text(pillar.title, language)}</h3>
+          <p>{text(pillar.body, language)}</p>
+        </article>)}
+      </div>
+      <div className="expertise-actions">
+        <Link href="/contact" className="gold-button">{text('heroContact', language)} <ArrowUpRight size={14} /></Link>
+        <WhatsAppButton className="whatsapp-on-dark" />
+      </div>
+      <p className="expertise-source">{text('expertiseSource', language)}<br /><span>{text('expertiseValidation', language)}</span></p>
+    </div>
+  </section>;
+}
+
+function TestimonialsSection() {
+  const { language } = useLanguage();
+  return <section className="testimonials-section" id="avis" aria-labelledby="testimonials-title">
+    <div className="testimonials-heading">
+      <div>
+        <div className="section-kicker eyebrow"><span className="gold-rule" />{text('testimonialsEyebrow', language)}</div>
+        <h2 id="testimonials-title" className="serif">{text('testimonialsTitle', language)}</h2>
+      </div>
+      <p>{text('testimonialsIntro', language)}</p>
+    </div>
+    <div className="testimonials-grid">
+      {[1, 2, 3].map((slot) => <article className="testimonial-card" key={slot}>
+        <Quote className="testimonial-quote" size={26} strokeWidth={1.2} aria-hidden="true" />
+        <span className="testimonial-slot eyebrow">{text('testimonialSlot', language)} · 0{slot}</span>
+        <p className="testimonial-body">{text('testimonialSlotBody', language)}</p>
+        <div className="testimonial-footer">
+          <span className="testimonial-avatar" aria-hidden="true" />
+          <span>
+            <strong>{text('testimonialNameSlot', language)}</strong>
+            <em>{text('testimonialDetailSlot', language)}</em>
+          </span>
+        </div>
+      </article>)}
+    </div>
+  </section>;
 }
 
 function CreationStorySection() {
@@ -306,12 +429,14 @@ function Home() {
           <p className="section-note">{text('collectionNote', language)}</p>
         </div>
         <div className="collection-gallery">
-          <PhotoPlaceholder className="collection-photo collection-photo-tall" language={language} />
-          <PhotoPlaceholder className="collection-photo collection-photo-small" language={language} />
-          <PhotoPlaceholder className="collection-photo collection-photo-wide" language={language} />
+          <GalleryItem className="collection-photo-tall" index="01" label="gallerySlotParure" />
+          <GalleryItem className="collection-photo-small" index="02" label="gallerySlotDetail" />
+          <GalleryItem className="collection-photo-wide" index="03" label="gallerySlotAtelier" />
         </div>
         <div className="gallery-index"><span>SAER GOLD</span><span className="index-rule" /><span>{text('collectionNote', language)}</span></div>
       </section>
+
+      <ExpertiseSection />
 
       <CreationStorySection />
 
@@ -327,6 +452,7 @@ function Home() {
       </section>
 
       <FactorySection />
+      <TestimonialsSection />
       <SocialDiscoverySection />
 
       <section className="visit-section">
@@ -467,12 +593,15 @@ function Footer() {
   const { language } = useLanguage();
   return <footer className="site-footer">
     <div className="footer-top">
-      <Link href="/" className="footer-brand"><span>SAER</span><span>GOLD</span></Link>
+      <Link href="/" className="footer-brand" aria-label={brandConfig.logoAlt}><img className="footer-logo" src={brandConfig.fullLogoUrl} alt={brandConfig.logoAlt} /></Link>
       <div className="footer-slogan">{text('footerMark', language)}</div>
       <SocialLinks className="footer-social" />
       <Link href="/contact" className="footer-contact">{text('contact', language)} <ArrowUpRight size={14} /></Link>
     </div>
-    <div className="footer-disclosure">{text('independentNotice', language)}</div>
+    <div className="footer-disclosure">
+      <span className="eyebrow footer-novatech-label">{text('novatechLabel', language)}</span>
+      <p>{text('novatechProposal', language)}</p>
+    </div>
     <div className="footer-bottom">
       <span>© SAER GOLD · {text('legal', language)}</span>
       <span>{text('address', language)}</span>
@@ -492,7 +621,8 @@ function NotFound() {
 function App() {
   const [language, setLanguage] = useState<Language>('FR');
   useEffect(() => {
-    document.documentElement.lang = language.toLowerCase();
+    // Wolof copy is not published yet: the French fallback is displayed, so the document stays French.
+    document.documentElement.lang = language === 'EN' ? 'en' : 'fr';
   }, [language]);
   return <LanguageContext.Provider value={{ language, setLanguage }}>
     <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>

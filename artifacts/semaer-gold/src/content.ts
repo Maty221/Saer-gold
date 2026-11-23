@@ -7,7 +7,7 @@ export const copy = {
   collections: { fr: 'Collections', wo: '', en: 'Collections' },
   creations: { fr: 'Créations', wo: '', en: 'Creations' },
   universe: { fr: 'La maison', wo: '', en: 'The house' },
-  factory: { fr: 'SAER GOLD FACTORY', wo: '', en: 'SAER GOLD FACTORY' },
+  factory: { fr: 'Factory', wo: '', en: 'Factory' },
   contact: { fr: 'Contact', wo: '', en: 'Contact' },
   mainNavLabel: { fr: 'Navigation principale', wo: '', en: 'Main navigation' },
   mobileNavLabel: { fr: 'Navigation mobile', wo: '', en: 'Mobile navigation' },
@@ -46,7 +46,7 @@ export const copy = {
   creativeSignature: { fr: "SAER GOLD — L'ART DE FAIRE PARLER L'OR.", wo: '', en: 'SAER GOLD — THE ART OF MAKING GOLD SPEAK.' },
   visit: { fr: 'Nous trouver à Dakar', wo: '', en: 'Find us in Dakar' },
   factoryEyebrow: { fr: 'Une proposition éditoriale', wo: '', en: 'An editorial proposal' },
-  factoryTitle: { fr: 'SAER GOLD FACTORY', wo: '', en: 'SAER GOLD FACTORY' },
+  factoryTitle: { fr: 'FACTORY SAER GOLD', wo: '', en: 'FACTORY SAER GOLD' },
   factoryIntro: { fr: 'Six chapitres narratifs proposés pour accueillir les images et vidéos officielles de la maison.', wo: '', en: 'Six proposed narrative chapters for the house’s official images and videos.' },
   factoryDisclaimer: { fr: 'Ces rubriques sont des pistes éditoriales, pas une description vérifiée de l’atelier ou de ses procédés.', wo: '', en: 'These are editorial categories, not a verified description of the workshop or its processes.' },
   factoryChapterInspiration: { fr: 'Inspiration', wo: '', en: 'Inspiration' },
@@ -86,7 +86,7 @@ export const copy = {
   footerMark: { fr: 'Le prince des bijoutiers', wo: '', en: 'The prince of jewelers' },
   independentNotice: { fr: 'Concept indépendant réalisé par NOVYTECH STUDIO. Proposition créative non officielle, présentée à SAER GOLD.', wo: '', en: 'Independent concept by NOVYTECH STUDIO. Unofficial creative proposal presented to SAER GOLD.' },
   legal: { fr: 'Tous droits réservés.', wo: '', en: 'All rights reserved.' },
-  wolofNotice: { fr: 'Traductions wolof à vérifier · Le français s’affiche tant qu’elles ne sont pas validées.', wo: '', en: 'Wolof translations need review · French is shown until they are approved.' },
+  wolofNotice: { fr: 'Le wolof sera publié après validation par un locuteur compétent. Le français s’affiche en attendant.', wo: '', en: 'Wolof will be published once a fluent speaker has approved it. French is shown in the meantime.' },
   menuOpen: { fr: 'Ouvrir le menu', wo: '', en: 'Open menu' },
   menuClose: { fr: 'Fermer le menu', wo: '', en: 'Close menu' },
   mapDistrict: { fr: 'Dakar · SICAP Baobab', wo: '', en: 'Dakar · SICAP Baobab' },
@@ -98,15 +98,53 @@ export const copy = {
   homeMetaDescription: { fr: 'SAER GOLD — Le prince des bijoutiers. Vitrine de la maison à Dakar, Sénégal.', wo: '', en: 'SAER GOLD — The prince of jewelers. The house’s showcase in Dakar, Senegal.' },
   contactMetaTitle: { fr: 'Contact — SAER GOLD', wo: '', en: 'Contact — SAER GOLD' },
   contactMetaDescription: { fr: 'Coordonnées et emplacement de SAER GOLD à SICAP Baobab, Dakar, Sénégal.', wo: '', en: 'Contact details and location for SAER GOLD in SICAP Baobab, Dakar, Senegal.' },
+  languageSelectLabel: { fr: 'Choisir la langue', wo: '', en: 'Choose language' },
+  wolofPending: { fr: 'À valider', wo: '', en: 'Pending' },
+  expertise: { fr: 'Expertise', wo: '', en: 'Expertise' },
+  expertiseEyebrow: { fr: 'La maison SAER GOLD', wo: '', en: 'The house of SAER GOLD' },
+  expertiseTitle: { fr: 'Un héritage, une écriture.', wo: '', en: 'A heritage, a signature.' },
+  expertiseLead: { fr: "À Dakar, le nom de Saer Ngoumb Gueye est indissociable de celui de SAER GOLD. La maison inscrit l’or dans une histoire familiale et dans le geste de l’artisan, et signe des parures qui accompagnent les unions, les baptêmes et les grandes étapes d’une vie.", wo: '', en: 'In Dakar, the name Saer Ngoumb Gueye is inseparable from that of SAER GOLD. The house places gold within a family history and the artisan’s gesture, creating pieces that accompany weddings, baptisms and life’s great milestones.' },
+  expertiseBody: { fr: "Le savoir-faire de la maison s’appuie sur des gestes transmis de génération en génération. Le filigrane transforme le métal en dentelle ; le torsadé lui donne relief et mouvement. Chaque création est pensée comme un objet de célébration — un langage, une mémoire et une signature.", wo: '', en: 'The house’s craftsmanship rests on gestures handed down through generations. Filigree turns metal into lace; twisting gives it relief and movement. Each creation is conceived as an object of celebration — a language, a memory and a signature.' },
+  expertisePillarFiligreeTitle: { fr: 'Le filigrane', wo: '', en: 'Filigree' },
+  expertisePillarFiligreeText: { fr: 'De très fins fils d’or assemblés et entrelacés pour composer des motifs d’une grande délicatesse.', wo: '', en: 'Very fine gold threads assembled and interlaced into motifs of great delicacy.' },
+  expertisePillarTwistTitle: { fr: 'Le torsadé', wo: '', en: 'Twisting' },
+  expertisePillarTwistText: { fr: 'Le métal gagne en relief et en mouvement ; les pleins et les ajourés se répondent, entre densité et légèreté.', wo: '', en: 'The metal gains relief and movement; solid areas and openwork answer each other, between density and lightness.' },
+  expertisePillarBespokeTitle: { fr: 'Le sur-mesure', wo: '', en: 'Bespoke' },
+  expertisePillarBespokeText: { fr: 'Proportions, tenue, personnalité et occasion : chaque parure est pensée dans son ensemble, au plus près de celle qui la portera.', wo: '', en: 'Proportion, outfit, personality and occasion: each suite is considered as a whole, as close as possible to the woman who will wear it.' },
+  expertiseSource: { fr: 'D’après l’article « Saer Ngoumb Gueye, le Prince des bijoutiers Sénégalais », Luxe Infinity Afrique — Spécial Sénégal, octobre 2026.', wo: '', en: 'Based on the article “Saer Ngoumb Gueye, the Prince of Senegalese Jewelers”, Luxe Infinity Afrique — Senegal Special, October 2026.' },
+  expertiseValidation: { fr: 'Présentation éditoriale à valider par SAER GOLD.', wo: '', en: 'Editorial presentation to be approved by SAER GOLD.' },
+  gallerySlotParure: { fr: 'Parure signature', wo: '', en: 'Signature suite' },
+  gallerySlotDetail: { fr: 'Détail d’orfèvrerie', wo: '', en: 'Goldsmithing detail' },
+  gallerySlotAtelier: { fr: 'Geste d’atelier', wo: '', en: 'Workshop gesture' },
+  galleryStoryPending: { fr: 'Histoire de la pièce à compléter', wo: '', en: 'Piece story to be completed' },
+  testimonialsEyebrow: { fr: 'Témoignages', wo: '', en: 'Testimonials' },
+  testimonialsTitle: { fr: 'Avis de nos clients.', wo: '', en: 'Client reviews.' },
+  testimonialsIntro: { fr: 'Cet espace est réservé aux témoignages authentiques des clients de SAER GOLD. Aucun avis, nom ou note n’est publié avant d’avoir été recueilli et validé par la maison.', wo: '', en: 'This space is reserved for genuine testimonials from SAER GOLD clients. No review, name or rating is published before it has been collected and approved by the house.' },
+  testimonialSlot: { fr: 'Témoignage à recueillir', wo: '', en: 'Testimonial to be collected' },
+  testimonialSlotBody: { fr: 'Le texte du client sera publié ici, dans ses mots exacts, après validation.', wo: '', en: 'The client’s own words will be published here once approved.' },
+  testimonialNameSlot: { fr: 'Prénom et nom du client', wo: '', en: 'Client’s full name' },
+  testimonialDetailSlot: { fr: 'Création · Ville · Date', wo: '', en: 'Creation · City · Date' },
+  novatechLabel: { fr: 'NOVYTECH STUDIO', wo: '', en: 'NOVYTECH STUDIO' },
+  novatechProposal: { fr: 'Proposition de collaboration indépendante. Ce site est un concept créatif présenté à SAER GOLD ; NOVYTECH n’est ni une activité, ni une marque de SAER GOLD.', wo: '', en: 'Independent collaboration proposal. This site is a creative concept presented to SAER GOLD; NOVYTECH is not a SAER GOLD business or brand.' },
 } satisfies Record<string, Translation>;
 
 export type CopyKey = keyof typeof copy;
 
+// Single source of truth for the official brand mark.
+// Assets come from the official SAER GOLD logo: the crowned SG monogram (transparent)
+// for the header, and the complete lockup for the footer.
+export const brandConfig = {
+  name: 'SAER GOLD',
+  crestUrl: '/brand/saer-gold-crest.png',
+  fullLogoUrl: '/brand/saer-gold-logo.png',
+  logoAlt: 'SAER GOLD — Le Prince des Bijoutiers',
+};
+
 export const contactConfig = {
   address: 'Dakar, SICAP Baobab, rond-point Jean-Paul Diaz, Sénégal',
   mapsSearchUrl: 'https://www.google.com/maps/search/?api=1&query=SICAP+Baobab+rond-point+Jean-Paul+Diaz+Dakar+Senegal',
-  // Configure only after SAER GOLD confirms the official WhatsApp number.
-  whatsappNumber: '',
+  // Official WhatsApp number — change it only here. The wa.me link is derived from it.
+  whatsappNumber: '+221 77 614 63 23',
   socials: [
     { key: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/saergold_leprince_desbijoutier?vrfl=b2J6azN6c25pMm5y' },
     { key: 'facebook', label: 'Facebook', url: 'https://share.google/b2ylp0hDqYpKaKgDW' },
