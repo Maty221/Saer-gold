@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "SAER GOLD"
+description = "Site vitrine éditorial premium de SAER GOLD – LE PRINCE DES BIJOUTIERS, à Dakar, Sénégal. Concept indépendant et proposition créative non officielle."
+version = "1.0.0"
+id = "artifacts/semaer-gold"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19949
+
+[services.development]
+run = "pnpm --filter @workspace/semaer-gold run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/semaer-gold", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/semaer-gold/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19949"
+BASE_PATH = "/"
