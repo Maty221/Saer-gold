@@ -3,6 +3,8 @@ import { Link, Route, Router as WouterRouter, Switch, useLocation } from 'wouter
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Check, Compass, Globe2, MapPin, Menu, MessageCircle, Navigation, Share2, X } from 'lucide-react';
 import { SiFacebook, SiInstagram, SiTiktok } from 'react-icons/si';
 import { contactConfig, creationStoryTemplate, text, type CopyKey, type Language } from './content';
+import { SitePhoto } from './components/site-photo';
+import type { ImageKey } from './images';
 
 const LanguageContext = createContext<{ language: Language; setLanguage: (language: Language) => void } | null>(null);
 const languageOptions: { value: Language; flag: string; short: string; label: string }[] = [
@@ -24,6 +26,14 @@ const factoryChapterKeys = [
   'factoryChapterDetails',
   'factoryChapterMasterpiece',
 ] as const;
+const factoryImages: ImageKey[] = [
+  'factoryInspiration',
+  'factoryVision',
+  'factoryDesign',
+  'factoryMaking',
+  'factoryDetails',
+  'factoryMasterpiece',
+];
 const creationDetailFields: { key: keyof typeof creationStoryTemplate; label: CopyKey }[] = [
   { key: 'summary', label: 'summary' },
   { key: 'history', label: 'history' },
@@ -178,19 +188,6 @@ function Header() {
   );
 }
 
-function PhotoPlaceholder({ className = '', language, label = 'imagePlaceholder' }: { className?: string; language: Language; label?: CopyKey }) {
-  return <div className={`image-placeholder ${className}`} role="img" aria-label={text(label, language)} data-testid="image-original-photo-placeholder">
-    <span className="placeholder-label">{text(label, language)}</span>
-  </div>;
-}
-
-function MediaPlaceholder({ language, label = 'factoryMediaPlaceholder', className = '' }: { language: Language; label?: CopyKey; className?: string }) {
-  return <div className={`media-placeholder ${className}`} role="img" aria-label={text(label, language)}>
-    <span className="media-placeholder-mark" aria-hidden="true">+</span>
-    <span>{text(label, language)}</span>
-  </div>;
-}
-
 function CreationStorySection() {
   const { language } = useLanguage();
   return <section className="creation-story-section" id="creations" aria-labelledby="creation-story-title">
@@ -203,10 +200,10 @@ function CreationStorySection() {
     </div>
     <article className="creation-story-card">
       <div className="creation-story-media">
-        <PhotoPlaceholder className="creation-story-main-photo" language={language} label="mainPhotoLabel" />
+        <SitePhoto className="creation-story-main-photo" image="creationMain" language={language} />
         <div className="creation-story-gallery">
-          <PhotoPlaceholder language={language} label="macroPhotoLabel" />
-          <MediaPlaceholder language={language} label="videoLabel" />
+          <SitePhoto image="creationMacro" language={language} />
+          <SitePhoto image="creationCampaign" language={language} />
         </div>
       </div>
       <div className="creation-story-copy">
@@ -237,7 +234,7 @@ function FactorySection() {
     </div>
     <div className="factory-grid">
       {factoryChapterKeys.map((chapter, index) => <article className="factory-card" key={chapter}>
-        <PhotoPlaceholder className="factory-card-photo" language={language} label="factoryMediaPlaceholder" />
+        <SitePhoto className="factory-card-photo" image={factoryImages[index]} language={language} />
         <div className="factory-card-caption">
           <span className="factory-index serif">{String(index + 1).padStart(2, '0')}</span>
           <h3 className="serif">{text(chapter, language)}</h3>
@@ -245,7 +242,7 @@ function FactorySection() {
         </div>
       </article>)}
     </div>
-    <MediaPlaceholder language={language} label="factoryMediaPlaceholder" className="factory-video-slot" />
+    <SitePhoto image="factoryOverview" language={language} className="factory-video-slot" />
   </section>;
 }
 
@@ -259,8 +256,8 @@ function SocialDiscoverySection() {
       <SocialLinks className="social-discovery-links" />
     </div>
     <div className="social-media-slots">
-      <MediaPlaceholder language={language} label="socialVideoSlot" className="social-video-slot" />
-      <MediaPlaceholder language={language} label="socialCampaignSlot" className="social-campaign-slot" />
+      <SitePhoto image="socialCampaign" language={language} className="social-video-slot" />
+      <SitePhoto image="socialEarrings" language={language} className="social-campaign-slot" />
     </div>
   </section>;
 }
@@ -271,7 +268,7 @@ function Home() {
   return (
     <main>
       <section className="hero" aria-labelledby="hero-title">
-        <div className="hero-photo"><PhotoPlaceholder language={language} /></div>
+        <div className="hero-photo"><SitePhoto image="hero" language={language} priority /></div>
         <div className="hero-shade" />
         <div className="hero-content">
           <div className="eyebrow hero-eyebrow"><span className="gold-rule" />{text('heroEyebrow', language)}</div>
@@ -294,7 +291,7 @@ function Home() {
           <p className="intro-tagline">{text('creativeSignatureLabel', language)}</p>
           <p className="creative-signature serif">{text('creativeSignature', language)}</p>
         </div>
-        <div className="intro-image"><PhotoPlaceholder language={language} /></div>
+        <div className="intro-image"><SitePhoto image="maison" language={language} /></div>
       </section>
 
       <section className="collections-section" id="collections">
@@ -306,9 +303,9 @@ function Home() {
           <p className="section-note">{text('collectionNote', language)}</p>
         </div>
         <div className="collection-gallery">
-          <PhotoPlaceholder className="collection-photo collection-photo-tall" language={language} />
-          <PhotoPlaceholder className="collection-photo collection-photo-small" language={language} />
-          <PhotoPlaceholder className="collection-photo collection-photo-wide" language={language} />
+          <SitePhoto className="collection-photo collection-photo-tall" image="collectionNecklace" language={language} />
+          <SitePhoto className="collection-photo collection-photo-small" image="collectionEarring" language={language} />
+          <SitePhoto className="collection-photo collection-photo-wide" image="collectionEarrings" language={language} />
         </div>
         <div className="gallery-index"><span>SAER GOLD</span><span className="index-rule" /><span>{text('collectionNote', language)}</span></div>
       </section>
@@ -321,8 +318,8 @@ function Home() {
           <h2 className="serif">{text('craftTitle', language)}</h2>
           <p>{text('craftNote', language)}</p>
         </div>
-        <PhotoPlaceholder className="craft-photo-main" language={language} />
-        <PhotoPlaceholder className="craft-photo-detail" language={language} />
+        <SitePhoto className="craft-photo-main" image="craftMain" language={language} />
+        <SitePhoto className="craft-photo-detail" image="craftDetail" language={language} />
         <div className="craft-number serif">S<span>.</span></div>
       </section>
 
@@ -330,7 +327,7 @@ function Home() {
       <SocialDiscoverySection />
 
       <section className="visit-section">
-        <div className="visit-image"><PhotoPlaceholder language={language} /></div>
+        <div className="visit-image"><SitePhoto image="visit" language={language} /></div>
         <div className="visit-copy">
           <div className="section-kicker eyebrow"><span className="gold-rule" />{text('heroEyebrow', language)}</div>
           <h2 className="serif">{text('visit', language)}</h2>
