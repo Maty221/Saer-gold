@@ -3,6 +3,8 @@ import { Link, Route, Router as WouterRouter, Switch, useLocation } from 'wouter
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Check, Compass, Globe2, MapPin, Menu, MessageCircle, Navigation, Share2, X } from 'lucide-react';
 import { SiFacebook, SiInstagram, SiTiktok } from 'react-icons/si';
 import { contactConfig, creationStoryTemplate, text, type CopyKey, type Language } from './content';
+import { useMetadata } from './lib/metadata';
+import { CataloguePage } from './pages/catalogue';
 
 const LanguageContext = createContext<{ language: Language; setLanguage: (language: Language) => void } | null>(null);
 const languageOptions: { value: Language; flag: string; short: string; label: string }[] = [
@@ -37,26 +39,6 @@ function useLanguage() {
   const context = useContext(LanguageContext);
   if (!context) throw new Error('LanguageContext is unavailable');
   return context;
-}
-
-function useMetadata(title: string, description: string) {
-  useEffect(() => {
-    document.title = title;
-    const updateMeta = (selector: string, keyAttribute: string, keyValue: string, value: string) => {
-      let element = document.querySelector<HTMLMetaElement>(selector);
-      if (!element) {
-        element = document.createElement('meta');
-        element.setAttribute(keyAttribute, keyValue);
-        document.head.appendChild(element);
-      }
-      element.setAttribute('content', value);
-    };
-    updateMeta('meta[name="description"]', 'name', 'description', description);
-    updateMeta('meta[property="og:title"]', 'property', 'og:title', title);
-    updateMeta('meta[property="og:description"]', 'property', 'og:description', description);
-    updateMeta('meta[name="twitter:title"]', 'name', 'twitter:title', title);
-    updateMeta('meta[name="twitter:description"]', 'name', 'twitter:description', description);
-  }, [title, description]);
 }
 
 function HashAnchorScroll() {
@@ -127,7 +109,7 @@ function Header() {
   const onHome = location === '/';
   const navItems = [
     { label: text('home', language), href: '/' },
-    { label: text('collections', language), href: onHome ? '#collections' : '/#collections' },
+    { label: text('collections', language), href: '/collections' },
     { label: text('creations', language), href: onHome ? '#creations' : '/#creations' },
     { label: text('factory', language), href: onHome ? '#factory' : '/#factory' },
     { label: text('universe', language), href: onHome ? '#universe' : '/#universe' },
@@ -140,7 +122,7 @@ function Header() {
           <span>SAER</span><span className="wordmark-gold">GOLD</span>
         </Link>
         <nav className="desktop-nav" aria-label={text('mainNavLabel', language)}>
-          {navItems.map((item) => <Link key={item.href + item.label} href={item.href} className="nav-link">{item.label}</Link>)}
+          {navItems.map((item) => <Link key={item.href + item.label} href={item.href} className={`nav-link ${item.href === '/collections' && location === '/collections' ? 'active' : ''}`}>{item.label}</Link>)}
           <Link href="/contact" className={`nav-link ${location === '/contact' ? 'active' : ''}`}>{text('contact', language)}</Link>
         </nav>
         <div className="header-tools">
@@ -502,6 +484,7 @@ function App() {
         <LanguageNotice />
         <Switch>
           <Route path="/" component={Home} />
+          <Route path="/collections">{() => <CataloguePage language={language} whatsappAction={<WhatsAppButton />} />}</Route>
           <Route path="/contact" component={Contact} />
           <Route component={NotFound} />
         </Switch>
